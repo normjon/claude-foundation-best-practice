@@ -1,6 +1,6 @@
 # ADR-013: GitFlow Branching Strategy
 
-**Status:** Accepted
+**Status:** Accepted (Amended 2026-03-02)
 **Date:** 2026-03-01
 **Scope:** Infrastructure + Application
 **Tags:** git, branching, source-control, process, ci-cd, collaboration
@@ -205,6 +205,86 @@ gh pr list --state merged --base main --limit 10
 gh pr list --state open | grep feature/
 # Expected: all open feature PRs target develop
 ```
+
+---
+
+## Amendment: GitHub Flow Exception for Single-App Repositories
+
+**Date:** 2026-03-02
+**Trigger:** Applying GitFlow to `normjon/claude-simple-app-test` — a single TypeScript
+application with one team, deployed to EKS via Helm — revealed that the overhead of
+`develop`, `release/*`, and back-merge discipline is disproportionate to the change control
+risk for repositories of that shape. The pipeline's GitHub Environment approval gates
+(not addressed in the original ADR) satisfy the same change control intent through a
+different mechanism.
+
+### When GitHub Flow is an Accepted Alternative
+
+A repository may use **GitHub Flow** (one long-lived `main` branch, `feature/*` branches
+merged directly to `main`) in place of GitFlow when **all** of the following conditions
+are met:
+
+| Condition | Rationale |
+|---|---|
+| Single application or service in the repository | GitFlow's `develop` buffer exists primarily to coordinate multiple parallel feature streams; a single-app repo rarely has this problem |
+| Team size ≤ 5 developers | Coordination overhead of GitFlow outweighs its benefit at this scale |
+| No parallel release streams required | A single active release at a time; no need to maintain two release lines simultaneously |
+| Continuous deployment model | Every merge to `main` is intended to deploy, not accumulate in a release branch |
+| GitHub Environment approval gates are configured | See required compensating controls below |
+
+### Required Compensating Controls
+
+GitHub Flow is **only** an accepted alternative when these controls are in place.
+They collectively satisfy the change control intent of GitFlow's `release/*` stabilization
+phase and dual-branch protection:
+
+**1. Branch protection on `main`:**
+- Require PR for every merge (no direct commits)
+- Require at least 1 approving review
+- Require CI status checks to pass (`Test & Lint` from `ci.yml`)
+
+**2. GitHub Environment approval gates (minimum):**
+
+| Environment | Required Approvers | Purpose |
+|---|---|---|
+| `dev` | none | Auto-deploy on merge — immediate feedback |
+| `test` | 1 (any developer) | Replaces: developer testing on `develop` |
+| `staging` | 2 (tech lead + QA) | Replaces: `release/*` stabilization phase |
+| `prod` | 2 (tech lead + product owner) | Replaces: `main`-merge sign-off ceremony |
+
+**3. Promote artifacts, never rebuild:**
+The same image (identified by git SHA tag) that deployed to `dev` must be promoted
+unchanged through `test`, `staging`, and `prod`. No environment-specific builds.
+This provides the same guarantee as GitFlow's `release/*` → `main` promotion: what
+was tested is what ships.
+
+**4. Hotfix path:**
+```
+hotfix/<name> → PR to main → auto-deploy to dev → promote to prod via approval gates
+```
+A hotfix does not bypass the approval gates. Because there is no `develop` branch,
+there is no back-merge requirement — the hotfix is already in `main`.
+
+### What GitFlow Uniquely Provides (Acknowledged Trade-offs)
+
+GitHub Flow with Environment gates does **not** replace GitFlow in these scenarios:
+
+- **Parallel release streams** — supporting v1.x maintenance and v2.x development
+  simultaneously requires the `release/*` isolation that GitFlow provides
+- **Multi-team repositories** — when multiple teams merge concurrently, `develop` as
+  a persistent integration buffer prevents `main` from becoming unstable
+- **Infrastructure repositories** — Terraform and platform repos carry higher blast
+  radius; the `develop` buffer and formal release branch are warranted regardless of
+  team size
+
+### Migration Trigger
+
+A repository that starts under the GitHub Flow exception must migrate to full GitFlow
+when **any** of the following become true:
+- Team grows beyond 5 developers
+- A second application or service is added to the repository
+- Parallel release streams are required (e.g., supporting two major versions)
+- The repository is reclassified as infrastructure or platform scope
 
 ---
 

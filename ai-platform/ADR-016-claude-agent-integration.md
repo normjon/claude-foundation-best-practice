@@ -266,5 +266,5 @@ curl -s -o /dev/null -w "%{http_code}" https://github.com/aws-samples/anthropic-
   AWS: Agent SDK on EKS, Bedrock integration, workshop materials, IDP, computer vision
 - [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code)
 - [CLAUDE.md format reference](https://docs.anthropic.com/en/docs/claude-code#claudemd-files)
-- Related: [ADR-015 — README.md as Living Documentation](./ADR-015-readme-living-documentation.md)
-- Related: [ADR-001 — IRSA](./ADR-001-irsa-over-node-instance-profiles.md)
+- Related: [ADR-015 — README.md as Living Documentation](../process/ADR-015-readme-living-documentation.md)
+- Related: [ADR-001 — IRSA](../security/ADR-001-irsa-over-node-instance-profiles.md)

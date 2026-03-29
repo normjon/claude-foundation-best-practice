@@ -34,6 +34,12 @@ under the ADR Index section.
 6. Add a row to the affected folder's `CLAUDE.md` ADR Index table.
 7. Add a cross-reference in other folders' `CLAUDE.md` files if the ADR affects multiple domains.
 
+> **Note:** The README ADR index is the only place where all ADRs
+> are listed in full. Folder-level CLAUDE.md files are the
+> agent-routing layer — they summarise key rules and trigger
+> conditions, not a second full index. Do not duplicate full ADR
+> descriptions in CLAUDE.md files.
+
 ---
 
 ## ADR Index

@@ -109,7 +109,7 @@ under the ADR Index section.
 
 **Status:** Proposed
 **Date:** YYYY-MM-DD
-**Scope:** Infrastructure | Application | Both
+**Scope:** Security | Infrastructure | Application | Observability | Process | AI Platform | Multiple
 **Tags:** tag1, tag2
 
 ---

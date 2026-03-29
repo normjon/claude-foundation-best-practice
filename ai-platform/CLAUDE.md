@@ -32,3 +32,12 @@ This folder governs Claude agent integration, CLAUDE.md hierarchy standards, and
 - Before building any tool that handles MCP tool invocations → read ADR-018
 - Before onboarding a new agent type to the platform → read ADR-021
 - When building Claude-powered features on this platform → read ADR-016 (external library references)
+
+## Cross-References
+These ADRs from other folders directly affect work in this domain:
+
+| ADR | Folder | Rule Summary |
+|-----|--------|--------------|
+| ADR-015 | process/ | Update CLAUDE.md in the same PR as any change that affects agent behavior |
+| ADR-001 | security/ | Use IRSA for all AWS credential delivery in agent infrastructure |
+| ADR-003 | observability/ | Log all Claude API calls as structured JSON including model, token counts, and latency |

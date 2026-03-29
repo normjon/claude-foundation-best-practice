@@ -81,12 +81,12 @@ under the ADR Index section.
 | [ADR-013](./process/ADR-013-gitflow-branching-strategy.md) | GitFlow Branching Strategy | Accepted |
 | [ADR-014](./process/ADR-014-github-actions-pipeline.md) | GitHub Actions Pipeline Automation | Accepted |
 | [ADR-015](./process/ADR-015-readme-living-documentation.md) | README.md as Living Documentation | Accepted |
-| [ADR-016](./process/ADR-016-claude-agent-integration.md) | Claude Agent Integration via CLAUDE.md Hierarchy | Accepted |
 
 ### AI Platform
 
 | ADR | Title | Status |
 |-----|-------|--------|
+| [ADR-016](./ai-platform/ADR-016-claude-agent-integration.md) | Claude Agent Integration via CLAUDE.md Hierarchy | Accepted |
 | [ADR-021](./ai-platform/ADR-021-ai-platform-claude-md-hierarchy.md) | AI Platform CLAUDE.md Hierarchy | Accepted |
 
 ---

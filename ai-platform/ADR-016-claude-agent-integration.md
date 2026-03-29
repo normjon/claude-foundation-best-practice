@@ -152,14 +152,24 @@ Run `awssandbox` to refresh SSO session when credentials expire.
 Never store long-lived credentials in environment variables or files.
 
 ## Architecture Decision Records
-Before designing infrastructure or application code, consult the ADR library:
-- Repository: terraform-aws-eks-blueprints/docs/decisions/
-- Key rules:
-  - ADR-001: Use IRSA for all AWS credentials — never node instance profiles or env vars
-  - ADR-003: All logs must be structured JSON to stdout
-  - ADR-009: Image tags must be git SHA — never 'latest'
-  - ADR-013: GitFlow branching — never commit directly to main or develop
-  - ADR-015: README.md must be updated in the same PR as the code it documents
+Before designing infrastructure or application code, read the
+relevant domain folder CLAUDE.md first, then consult the full ADR:
+- security/        — credential delivery, input validation, IAM policy
+- infrastructure/  — Terraform, compute, networking, session protection
+- application/     — image tagging, path routing, container traceability
+- observability/   — structured logging, log collection
+- process/         — branching, CI/CD, documentation standards
+- ai-platform/     — Claude agent integration, CLAUDE.md hierarchy
+
+Key rules (read the full ADR for rationale and verification):
+- ADR-001 (security/):       Use IRSA — never node instance profiles or env vars
+- ADR-003 (observability/):  All logs must be structured JSON to stdout
+- ADR-009 (application/):    Image tags must be git SHA — never 'latest'
+- ADR-013 (process/):        GitFlow branching — never commit directly to main or develop
+- ADR-015 (process/):        README.md must be updated in the same PR as the code it documents
+- ADR-017 (infrastructure/): Each AWS account has one state file — never share state across accounts
+- ADR-018 (security/):       Validate all MCP Gateway inputs against declared schema before execution
+- ADR-021 (ai-platform/):    Agent repositories must follow the three-level CLAUDE.md hierarchy
 
 ## External Reference Libraries
 - Claude patterns: https://github.com/anthropics/claude-cookbooks

@@ -94,6 +94,8 @@ under the ADR Index section.
 |-----|-------|--------|
 | [ADR-016](./ai-platform/ADR-016-claude-agent-integration.md) | Claude Agent Integration via CLAUDE.md Hierarchy | Accepted |
 | [ADR-021](./ai-platform/ADR-021-ai-platform-claude-md-hierarchy.md) | AI Platform CLAUDE.md Hierarchy | Accepted |
+| [ADR-022](./ai-platform/ADR-022-agent-layer-pattern.md) | Agent Layer Pattern | Accepted |
+| [ADR-023](./ai-platform/ADR-023-agentcore-container-requirements.md) | AgentCore Container Requirements | Accepted |
 
 ---
 

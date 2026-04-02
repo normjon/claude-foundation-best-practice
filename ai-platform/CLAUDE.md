@@ -17,6 +17,10 @@ This folder governs Claude agent integration, CLAUDE.md hierarchy standards, and
 
 6. **Apply ADR-001 (IRSA) for Claude API key storage.** Store API keys in Secrets Manager. Access via IRSA-scoped role. Never in environment variables or Helm values. (ADR-016)
 
+7. **All agent layers must own four components inline: system prompt, guardrail, agent manifest, and Prompt Vault Lambda. IAM roles are created inline in the agent layer — never in a shared module or the platform layer.** (ADR-022)
+
+8. **All AgentCore containers must use `us.anthropic.claude-sonnet-4-6` (not the bare model ID), start uvicorn with `--no-access-log --log-level warning`, cross-compile Python deps with `--python-platform aarch64-manylinux2014 --only-binary=:all:`, include `sessionId` in the payload body, and attach `BedrockAgentCoreFullAccess` to the runtime IAM role.** (ADR-023)
+
 ## ADR Index
 
 | ADR | Title | One-line Summary |
@@ -24,13 +28,16 @@ This folder governs Claude agent integration, CLAUDE.md hierarchy standards, and
 | [ADR-016](./ADR-016-claude-agent-integration.md) | Claude Agent Integration via CLAUDE.md Hierarchy | Three-level CLAUDE.md hierarchy encodes platform decisions for Claude agents |
 | [ADR-018](../security/ADR-018-mcp-gateway-input-validation.md) | MCP Gateway Input Validation | JSON schema validation required for all MCP tool invocations before handler execution |
 | [ADR-021](./ADR-021-ai-platform-claude-md-hierarchy.md) | AI Platform CLAUDE.md Hierarchy | AI-platform-specific content requirements at each level of the CLAUDE.md hierarchy |
+| [ADR-022](./ADR-022-agent-layer-pattern.md) | Agent Layer Pattern | Four-component canonical structure for all agent layers with inline IAM ownership |
+| [ADR-023](./ADR-023-agentcore-container-requirements.md) | AgentCore Container Requirements | Six non-obvious runtime rules derived from Phase 2 production failures |
 
 ## When to Read These ADRs
 
 - Before writing any CLAUDE.md file for an agent repository → read ADR-016, ADR-021
 - Before writing any MCP Gateway Lambda handler or tool schema → read ADR-018
 - Before building any tool that handles MCP tool invocations → read ADR-018
-- Before onboarding a new agent type to the platform → read ADR-021
+- Before onboarding a new agent type to the platform → read ADR-021, ADR-022
+- Before building or modifying an AgentCore container → read ADR-022, ADR-023
 - When building Claude-powered features on this platform → read ADR-016 (external library references)
 
 ## Cross-References

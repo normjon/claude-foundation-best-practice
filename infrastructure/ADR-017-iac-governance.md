@@ -172,6 +172,58 @@ terraform plan -out=tfplan 2>&1 | tee plan-output.txt
 # Attach plan-output.txt to the PR description before requesting review
 ```
 
+### AOSS Data Access Policy Principal (SSO deployments)
+
+When provisioning OpenSearch Serverless (AOSS) data access policies in environments where
+Terraform is run under AWS SSO credentials, the data access policy principal MUST use the
+stable IAM role ARN, not the STS session ARN.
+
+**DO:**
+```hcl
+data "aws_iam_session_context" "current" {
+  arn = data.aws_caller_identity.current.arn
+}
+
+# Use issuer_arn — stable across SSO token refreshes
+resource "aws_opensearchserverless_access_policy" "example" {
+  # ...
+  policy = jsonencode([{
+    Principal = [data.aws_iam_session_context.current.issuer_arn]
+    # ...
+  }])
+}
+```
+
+**DO NOT:**
+```hcl
+# This is the STS session ARN — changes on every SSO token refresh
+resource "aws_opensearchserverless_access_policy" "example" {
+  # ...
+  policy = jsonencode([{
+    Principal = [data.aws_caller_identity.current.arn]   # WRONG for SSO
+    # ...
+  }])
+}
+```
+
+**Why this matters:** `data.aws_caller_identity.current.arn` returns the STS assumed-role
+session ARN in the format `arn:aws:sts::ACCOUNT:assumed-role/ROLE/SESSION`. The SESSION
+component changes every time the SSO token refreshes. AOSS data access policies perform
+exact ARN matching — after a token refresh, the policy match fails with HTTP 403 even
+though the policy appears correct in the console.
+
+`data.aws_iam_session_context.current.issuer_arn` returns the stable IAM role ARN in the
+format `arn:aws:iam::ACCOUNT:role/...` which is stable across refreshes.
+
+This failure is intermittent (only occurs after token refresh) and the error message (403
+Forbidden from OpenSearch) does not indicate the root cause. It is one of the more
+time-consuming failure modes in SSO-managed environments.
+
+**Security implication:** Using the session ARN creates a false sense of security — the
+policy appears scoped to a specific credential but silently stops enforcing after refresh.
+Using the role ARN is both more reliable and correctly expresses the intended authorization
+boundary (the IAM role, not a transient session).
+
 ---
 
 ## Verification

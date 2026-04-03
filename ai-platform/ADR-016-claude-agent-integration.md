@@ -148,7 +148,7 @@ and reads the codebase on demand.
 # Organization Standards
 
 ## AWS Credentials
-Run `awssandbox` to refresh SSO session when credentials expire.
+Run `aws sso login --profile <your-sso-profile>` to refresh SSO session when credentials expire.
 Never store long-lived credentials in environment variables or files.
 
 ## Architecture Decision Records
@@ -203,7 +203,7 @@ Always run terraform commands from within `patterns/<name>/`.
 **DO:**
 - Keep each CLAUDE.md level under 150 lines — link to ADRs for detail, don't inline them
 - Write CLAUDE.md instructions as imperative commands, not suggestions
-  ("Run `awssandbox` to refresh credentials" not "You may want to refresh credentials")
+  ("Run `aws sso login --profile <your-sso-profile>` to refresh credentials" not "You may want to refresh credentials")
 - Update CLAUDE.md in the same PR as any change that affects agent behavior (see ADR-015)
 - Reference external pattern libraries by URL — do not copy their content locally
 
